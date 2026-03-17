@@ -47,8 +47,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
       <aside className="hidden w-64 flex-col border-r bg-white lg:flex">
         <div className="flex h-16 items-center border-b px-6">
           <Link href="/dashboard" className="flex items-center gap-2 font-bold text-blue-600">
-            <Activity className="h-6 w-6" />
-            <span className="text-xl">IoTera Admin</span>
+
+            <span className="text-xl">Dashboard</span>
           </Link>
         </div>
         <nav className="flex-1 space-y-1 p-4">
@@ -134,8 +134,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             </div>
             <div className="flex flex-shrink-0 items-center px-4">
               <Link href="/dashboard" className="flex items-center gap-2 font-bold text-blue-600">
-                <Activity className="h-6 w-6" />
-                <span className="text-xl">IoTera Admin</span>
+
+                <span className="text-xl">Dashboard</span>
               </Link>
             </div>
             <div className="mt-5 h-0 flex-1 overflow-y-auto">

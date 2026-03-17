@@ -14,13 +14,17 @@ import { EmptyState } from "@/components/feedback/empty-state";
 import { ErrorState } from "@/components/feedback/error-state";
 import { formatDate, formatCurrency, cn } from "@/lib/utils";
 import { Transaction } from "@/types/transaction";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Add pagination logic
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10
 
   const fetchTransactions = async () => {
     setIsLoading(true);
@@ -44,6 +48,11 @@ export default function TransactionsPage() {
     fetchTransactions();
   }, []);
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = transactions.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(transactions.length / itemsPerPage);
+
 
   if (error) {
     return <ErrorState onRetry={fetchTransactions} description={error} />;
@@ -62,7 +71,7 @@ export default function TransactionsPage() {
         <CardHeader>
           <CardTitle>Transaction History</CardTitle>
           <CardDescription>
-            Showing {transactions.length} of {transactions.length} total transactions
+            Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, transactions.length)} of {transactions.length} total transactions
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -88,7 +97,7 @@ export default function TransactionsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {transactions.map((transaction) => (
+                {currentItems.map((transaction) => (
                   <TableRow key={transaction.id}>
                     <TableCell className="font-mono text-xs text-gray-500">
                       {transaction.id}
@@ -119,6 +128,29 @@ export default function TransactionsPage() {
             </Table>
           )}
         </CardContent>
+        <div className="flex items-center justify-between px-2 py-4 border-t">
+          <p className="text-sm text-gray-500">
+            Page {currentPage} of {totalPages}
+          </p>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+            >
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
       </Card>
     </div>
   );

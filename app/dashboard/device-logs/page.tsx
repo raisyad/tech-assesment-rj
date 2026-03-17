@@ -6,13 +6,17 @@ import { EmptyState } from "@/components/feedback/empty-state";
 import { ErrorState } from "@/components/feedback/error-state";
 import { formatDate, cn } from "@/lib/utils";
 import { DeviceLog } from "@/types/device-log";
-import { RefreshCw, AlertTriangle, Info, CheckCircle2 } from "lucide-react";
+import { RefreshCw, AlertTriangle, Info, CheckCircle2, ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function DeviceLogsPage() {
   const [logs, setLogs] = useState<DeviceLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Add pagination logic
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10
 
   const fetchLogs = async () => {
     setIsLoading(true);
@@ -35,6 +39,11 @@ export default function DeviceLogsPage() {
   useEffect(() => {
     fetchLogs();
   }, []);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = logs.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(logs.length / itemsPerPage);
 
   const getLogIcon = (type: string) => {
     switch (type) {
@@ -66,7 +75,7 @@ export default function DeviceLogsPage() {
         <CardHeader>
           <CardTitle>Device Monitoring Logs</CardTitle>
           <CardDescription>
-            Real-time status updates from connected hardware
+            Logs device monitoring activity
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -81,7 +90,7 @@ export default function DeviceLogsPage() {
             />
           ) : (
             <div className="space-y-4">
-              {logs.map((log) => (
+              {currentItems.map((log) => (
                 <div
                   key={log.id}
                   className={cn(
@@ -113,6 +122,29 @@ export default function DeviceLogsPage() {
             </div>
           )}
         </CardContent>
+        <div className="flex items-center justify-between px-2 py-4 border-t">
+          <p className="text-sm text-gray-500">
+            Page {currentPage} of {totalPages}
+          </p>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+            >
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
       </Card>
     </div>
   );
