@@ -43,8 +43,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <aside className="hidden w-64 flex-col border-r bg-white lg:flex">
+    <div className="flex h-screen overflow-hidden bg-gray-50">
+      <aside className="hidden w-64 flex-col border-r bg-white lg:flex h-full">
         <div className="flex h-16 items-center border-b px-6">
           <Link href="/dashboard" className="flex items-center gap-2 font-bold text-blue-600">
 
