@@ -26,6 +26,10 @@ export default function TransactionsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10
 
+  // add Filter logic
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [customerFilter, setCustomerFilter] = useState("all");
+
   const fetchTransactions = async () => {
     setIsLoading(true);
     setError(null);
@@ -48,10 +52,17 @@ export default function TransactionsPage() {
     fetchTransactions();
   }, []);
 
+  const customers = Array.from(new Set(transactions.map(t => t.customerName).filter(Boolean)));
+  const filteredTransactions = transactions.filter((t) => {
+    const matchStatus = statusFilter === "all" || t.status === statusFilter;
+    const matchCustomer = customerFilter === "all" || t.customerName === customerFilter;
+    return matchStatus && matchCustomer;
+  });
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = transactions.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(transactions.length / itemsPerPage);
+  const currentItems = filteredTransactions.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
 
 
   if (error) {
@@ -60,11 +71,27 @@ export default function TransactionsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <Button variant="outline" size="sm" onClick={fetchTransactions} disabled={isLoading}>
-          <RefreshCw className={cn("mr-2 h-4 w-4", isLoading && "animate-spin")} />
-          Refresh
-        </Button>
+      <div className="flex flex-wrap gap-4 mb-6">
+        {/* Filter Status */}
+        <select
+          className="p-2 border rounded-md bg-white text-sm text-black"
+          value={statusFilter}
+          onChange={(e) => { setStatusFilter(e.target.value); setCurrentPage(1); }}
+        >
+          <option value="all">All Status</option>
+          <option value="success">Success</option>
+          <option value="pending">Pending</option>
+        </select>
+        <select
+          className="p-2 border rounded-md bg-white text-sm text-black"
+          value={customerFilter}
+          onChange={(e) => { setCustomerFilter(e.target.value); setCurrentPage(1); }}
+        >
+          <option value="all">All Customers</option>
+          {customers.map(customer => (
+            <option key={customer} value={customer}>{customer}</option>
+          ))}
+        </select>
       </div>
 
       <Card>

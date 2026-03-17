@@ -18,6 +18,10 @@ export default function DeviceLogsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10
 
+  // add filter logic
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [deviceFilter, setDeviceFilter] = useState("all");
+
   const fetchLogs = async () => {
     setIsLoading(true);
     setError(null);
@@ -40,10 +44,18 @@ export default function DeviceLogsPage() {
     fetchLogs();
   }, []);
 
+  const deviceIds = Array.from(new Set(logs.map(l => l.deviceId)));
+
+  const filteredLogs = logs.filter(log => {
+    const matchesType = typeFilter === "all" || log.type === typeFilter;
+    const matchesDevice = deviceFilter === "all" || log.deviceId === deviceFilter;
+    return matchesType && matchesDevice;
+  });
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = logs.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(logs.length / itemsPerPage);
+  const currentItems = filteredLogs.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredLogs.length / itemsPerPage);
 
   const getLogIcon = (type: string) => {
     switch (type) {
@@ -64,11 +76,27 @@ export default function DeviceLogsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <Button variant="outline" size="sm" onClick={fetchLogs} disabled={isLoading}>
-          <RefreshCw className={cn("mr-2 h-4 w-4", isLoading && "animate-spin")} />
-          Refresh
-        </Button>
+      <div className="flex flex-wrap gap-2 mb-6">
+        <select
+          className="p-2 border rounded-md bg-white text-sm text-black"
+          value={deviceFilter}
+          onChange={(e) => { setDeviceFilter(e.target.value); setCurrentPage(1); }}
+        >
+          <option value="all">All Devices</option>
+          {deviceIds.map(id => (
+            <option key={id} value={id}>Device {id}</option>
+          ))}
+        </select>
+        <select
+          className="p-2 border rounded-md bg-white text-sm text-black"
+          value={typeFilter}
+          onChange={(e) => { setTypeFilter(e.target.value); setCurrentPage(1); }}
+        >
+          <option value="all">All Types</option>
+          <option value="info">Info</option>
+          <option value="warning">Warning</option>
+          <option value="error">Error</option>
+        </select>
       </div>
 
       <Card>
