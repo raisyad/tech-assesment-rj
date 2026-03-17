@@ -33,14 +33,19 @@ export async function GET() {
 
     const dataObject = rawData.data || {};
 
-    const transactions = Object.entries(dataObject).map(([key, value]: [string, any]) => ({
-      id: key,
-      amount: value.payment?.amount || value.product?.price || 0,
-      status: value.detail?.transaction_status === "settlement" ? "success" : "pending",
-      createdAt: value.payment?.detail?.transaction_time || new Date(value.time?.timestamp || Date.now()).toISOString(),
-      customerName: value.payment?.detail?.issuer || "Unknown",
-      productName: value.product?.name || "Unknown Product",
-    }));
+    const transactions = Object.entries(dataObject).map(([key, value]: [string, any]) => {
+      let issuer = value.payment?.detail?.issuer || "Unknown";
+      if (issuer === "-") issuer = "Unknown";
+      
+      return {
+        id: key,
+        amount: value.payment?.amount || value.product?.price || 0,
+        status: value.detail?.transaction_status === "settlement" ? "success" : "pending",
+        createdAt: value.payment?.detail?.transaction_time || new Date(value.time?.timestamp || Date.now()).toISOString(),
+        customerName: issuer.toUpperCase(),
+        productName: value.product?.name || "Unknown Product",
+      };
+    });
 
     return NextResponse.json({
       success: true,

@@ -46,7 +46,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     <div className="flex h-screen overflow-hidden bg-gray-50">
       <aside className="hidden w-64 flex-col border-r bg-white lg:flex h-full">
         <div className="flex h-16 items-center border-b px-6">
-          <Link href="/dashboard" className="flex items-center gap-2 font-bold text-blue-600">
+          <Link href="/dashboard" className="flex items-center gap-2 font-bold text-gray-600">
 
             <span className="text-xl">Dashboard</span>
           </Link>
@@ -65,7 +65,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                 )}
               >
-                <item.icon className={cn("h-5 w-5", isActive ? "text-blue-600" : "text-gray-400")} />
+                <item.icon className={cn("h-5 w-5", isActive ? "text-gray-600" : "text-gray-400")} />
                 {item.label}
               </Link>
             );
@@ -94,7 +94,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             >
               <Menu className="h-6 w-6" />
             </Button>
-            <Link href="/dashboard" className="flex items-center gap-2 font-bold text-blue-600">
+            <Link href="/dashboard" className="flex items-center gap-2 font-bold text-gray-600">
               <Activity className="h-5 w-5" />
               <span>IoTera</span>
             </Link>
@@ -133,7 +133,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               </Button>
             </div>
             <div className="flex flex-shrink-0 items-center px-4">
-              <Link href="/dashboard" className="flex items-center gap-2 font-bold text-blue-600">
+              <Link href="/dashboard" className="flex items-center gap-2 font-bold text-gray-600">
 
                 <span className="text-xl">Dashboard</span>
               </Link>
@@ -154,7 +154,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                           : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                       )}
                     >
-                      <item.icon className={cn("h-6 w-6", isActive ? "text-blue-600" : "text-gray-400")} />
+                      <item.icon className={cn("h-6 w-6", isActive ? "text-gray-600" : "text-gray-400")} />
                       {item.label}
                     </Link>
                   );

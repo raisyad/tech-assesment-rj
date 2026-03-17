@@ -98,7 +98,7 @@ export default function TransactionsPage() {
         <CardHeader>
           <CardTitle>Transaction History</CardTitle>
           <CardDescription>
-            Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, transactions.length)} of {transactions.length} total transactions
+            Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredTransactions.length)} of {filteredTransactions.length} total transactions
           </CardDescription>
         </CardHeader>
         <CardContent>
