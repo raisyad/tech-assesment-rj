@@ -34,7 +34,13 @@ password: password
 
 ## Run Cloudflare on Local
 1. copy .env.example and change the name file to .dev.vars
-2. Copy the env config following step 2 on "How to run this project" Section
+2. Copy the env for correct config
+```env
+NEXTJS_ENV=development
+LOGIN_API_URL=https://asia-southeast2-iotera-vending.cloudfunctions.net/login
+DEVICE_LOG_API_URL=https://api-serverless.iotera.io/1000000021/data
+SESSION_SECRET=<CREATE_RANDOM_SECRET_CODE_HERE>
+```
 3. Run this command to preview project
 ```bash
 bun preview
