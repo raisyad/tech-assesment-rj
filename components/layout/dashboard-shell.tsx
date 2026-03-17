@@ -43,9 +43,9 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
-      <aside className="hidden w-64 flex-col border-r bg-white lg:flex h-full">
-        <div className="flex h-16 items-center border-b px-6">
+    <div className="flex h-screen overflow-hidden bg-gray-50/50">
+      <aside className="hidden w-64 flex-col border-r border-gray-100 bg-white lg:flex h-full shadow-sm">
+        <div className="flex h-16 items-center border-b border-gray-100 px-6">
           <Link href="/dashboard" className="flex items-center gap-2 font-bold text-gray-600">
 
             <span className="text-xl">Dashboard</span>
@@ -71,7 +71,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             );
           })}
         </nav>
-        <div className="border-t p-4">
+        <div className="border-t border-gray-100 p-4">
           <Button
             variant="ghost"
             className="w-full justify-start gap-3 text-gray-600 hover:text-red-600"
@@ -84,7 +84,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="flex h-16 items-center justify-between border-b bg-white px-4 lg:px-8">
+        <header className="flex h-16 items-center justify-between border-b border-gray-100 bg-white px-4 lg:px-8 shadow-sm">
           <div className="flex items-center lg:hidden">
             <Button
               variant="ghost"
