@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   CreditCard,
@@ -23,17 +23,27 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Transactions", href: "/dashboard", icon: CreditCard },
-  { label: "Device Logs", href: "/dashboard", icon: Activity },
+  { label: "Transactions", href: "/dashboard/transactions", icon: CreditCard },
+  { label: "Device Logs", href: "/dashboard/device-logs", icon: Activity },
 ];
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      router.push("/login");
+      router.refresh();
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar for desktop */}
       <aside className="hidden w-64 flex-col border-r bg-white lg:flex">
         <div className="flex h-16 items-center border-b px-6">
           <Link href="/dashboard" className="flex items-center gap-2 font-bold text-blue-600">
@@ -49,7 +59,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors disabled cursor-not-allowed",
+                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   isActive
                     ? "bg-blue-50 text-blue-700"
                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
@@ -64,7 +74,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         <div className="border-t p-4">
           <Button
             variant="ghost"
-            className="w-full justify-start gap-3 text-gray-600 hover:text-red-600 disabled cursor-not-allowed"
+            className="w-full justify-start gap-3 text-gray-600 hover:text-red-600"
+            onClick={handleLogout}
           >
             <LogOut className="h-5 w-5" />
             Logout
@@ -137,7 +148,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                       href={item.href}
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={cn(
-                        "flex items-center gap-3 rounded-md px-3 py-2 text-base font-medium transition-colors disabled cursor-not-allowed",
+                        "flex items-center gap-3 rounded-md px-3 py-2 text-base font-medium transition-colors",
                         isActive
                           ? "bg-blue-50 text-blue-700"
                           : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
@@ -153,7 +164,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             <div className="border-t p-4">
               <Button
                 variant="ghost"
-                className="w-full justify-start gap-3 text-gray-600 hover:text-red-600 disabled cursor-not-allowed"
+                className="w-full justify-start gap-3 text-gray-600 hover:text-red-600"
+                onClick={handleLogout}
               >
                 <LogOut className="h-6 w-6" />
                 Logout

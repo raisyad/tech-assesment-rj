@@ -1,15 +1,54 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { CreditCard, Activity } from "lucide-react";
+import { CreditCard, Activity, ArrowUpRight, ArrowDownRight, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Transaction } from "@/types/transaction";
+import { DeviceLog } from "@/types/device-log";
 
 export default function DashboardPage() {
-  const totalTransactions = 100;
-  const totalAmount = 1000000;
-  const activeDevices = 10;
-  const errorLogs = 10;
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [logs, setLogs] = useState<DeviceLog[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const [transRes, logsRes] = await Promise.all([
+          fetch("/api/transactions"),
+          fetch("/api/device-logs")
+        ]);
+
+        const transData = await transRes.json();
+        const logsData = await logsRes.json();
+
+        if (transData.success) setTransactions(transData.data);
+        if (logsData.success) setLogs(logsData.data);
+      } catch (error) {
+        console.error("Dashboard fetch error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const totalTransactions = transactions.length;
+  const totalAmount = transactions.reduce((sum, t) => sum + t.amount, 0);
+  const activeDevices = new Set(logs.map(l => l.deviceId)).size || (logs.length > 0 ? 1 : 0);
+  const errorLogs = logs.filter(l => l.type === "error").length;
+
+  if (isLoading) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <RefreshCw className="h-8 w-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -57,8 +96,8 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent className="flex flex-col items-center justify-center py-10 text-center">
             <p className="text-sm text-gray-500 mb-4">
-              {totalTransactions > 0
-                ? `${totalTransactions} transactions recorded.`
+              {transactions.length > 0
+                ? `${transactions.length} transactions recorded.`
                 : "No transactions found yet."}
             </p>
             <Link href="/dashboard/transactions">
@@ -73,8 +112,8 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent className="flex flex-col items-center justify-center py-10 text-center">
             <p className="text-sm text-gray-500 mb-4">
-              {activeDevices > 0
-                ? `Monitoring ${activeDevices} log entries.`
+              {logs.length > 0
+                ? `Monitoring ${logs.length} log entries.`
                 : "No device logs available."}
             </p>
             <Link href="/dashboard/device-logs">
